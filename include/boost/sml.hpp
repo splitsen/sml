@@ -957,7 +957,7 @@ struct sm_impl {
   template <class TDeps, class TSubs>
   void start(TDeps &deps, TSubs &subs) {
     process_internal_events(on_entry<_, initial>{}, deps, subs);
-    process_internal_events(anonymous{}, deps, subs);
+    while (process_internal_events(anonymous{}, deps, subs));
   }
   template <class TEvent, class TDeps, class TSubs,
             __BOOST_SML_REQUIRES(!aux::is_base_of<get_generic_t<TEvent>, events_ids_t>::value &&
@@ -1184,14 +1184,16 @@ class sm {
   using deps = aux::apply_t<merge_deps, transitions_t>;
   using deps_t =
       aux::apply_t<aux::pool,
-                   aux::apply_t<aux::unique_t, aux::join_t<deps, logger_dep_t, aux::apply_t<merge_deps, sub_sms_t>>>>;
+                   aux::apply_t<aux::unique_t, aux::join_t<deps, logger_dep_t, aux::type_list<typename TSM::sm&>, aux::apply_t<merge_deps, sub_sms_t>>>>;
   struct events_ids : aux::apply_t<aux::inherit, events> {};
+  template<class> struct q;
 
  public:
   sm(sm &&) = default;
   sm(const sm &) = delete;
   sm &operator=(const sm &) = delete;
-  sm(aux::init, deps_t &deps) : deps_(deps), sub_sms_{deps} { aux::get<sm_impl<TSM>>(sub_sms_).start(deps_, sub_sms_); }
+  sm(aux::init, deps_t &deps) : deps_(deps), sub_sms_{deps} {
+    aux::get<sm_impl<TSM>>(sub_sms_).start(deps_, sub_sms_); }
   template <class... TDeps, __BOOST_SML_REQUIRES(aux::is_unique_t<TDeps...>::value)>
   explicit sm(TDeps &&... deps) : deps_{aux::init{}, aux::pool<TDeps...>{deps...}}, sub_sms_{aux::pool<TDeps...>{deps...}} {
     aux::get<sm_impl<TSM>>(sub_sms_).start(deps_, sub_sms_);
