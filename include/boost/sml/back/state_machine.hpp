@@ -93,10 +93,10 @@ struct sm_impl {
     process_internal_events(anonymous{}, deps, subs);
   }
 
-  template <class TEvent, class TDeps, class TSubs,
+  template <class TEvent, class TDeps, class TSubs, class... Ts,
             __BOOST_SML_REQUIRES(!aux::is_base_of<get_generic_t<TEvent>, events_ids_t>::value &&
                                  !aux::is_base_of<get_mapped_t<TEvent>, events_ids_t>::value)>
-  bool process_internal_events(const TEvent &, TDeps &, TSubs &, ...) {
+  bool process_internal_events(const TEvent &, TDeps &, TSubs &, Ts&&...) {
     return false;
   }
 
@@ -125,10 +125,10 @@ struct sm_impl {
 #endif  // __pph__
   }
 
-  template <class TEvent, class TDeps, class TSubs,
+  template <class TEvent, class TDeps, class TSubs, class... Ts,
             __BOOST_SML_REQUIRES(!aux::is_base_of<get_generic_t<TEvent>, events_ids_t>::value &&
                                  !aux::is_base_of<get_mapped_t<TEvent>, events_ids_t>::value)>
-  bool process_internal_event(const TEvent &, TDeps &, TSubs &, ...) {
+  bool process_internal_event(const TEvent &, TDeps &, TSubs &, Ts&&...) {
     return false;
   }
 

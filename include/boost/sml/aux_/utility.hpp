@@ -181,7 +181,8 @@ struct pool : pool_type<Ts>... {
 template <>
 struct pool<> {
   using boost_di_inject__ = type_list<>;
-  explicit pool(...) {}
+  template<class... Ts>
+  explicit pool(Ts&&...) {}
   __BOOST_SML_ZERO_SIZE_ARRAY(byte);
 };
 
@@ -247,7 +248,8 @@ struct zero_wrapper_impl<TExpr, type_list<TArgs...>> {
 template <class TExpr>
 struct zero_wrapper<TExpr, void_t<decltype(+declval<TExpr>())>>
     : zero_wrapper_impl<TExpr, function_traits_t<decltype(&TExpr::operator())>> {
-  zero_wrapper(...) {}
+  template<class... Ts>
+  zero_wrapper(Ts&&...) {}
   const TExpr &get() const { return reinterpret_cast<const TExpr &>(*this); }
 };
 
