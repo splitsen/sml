@@ -92,6 +92,9 @@ message(STATUS "CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}")
 # Turn on the .vcproj folder support
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+if(NOT DEFINED BOOST_ROOT)
+  set(BOOST_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../boost_1_65_1)
+endif()
 find_package(Boost          REQUIRED)
 
 include_directories(AFTER

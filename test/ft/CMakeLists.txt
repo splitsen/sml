@@ -11,6 +11,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # gcc
 
     add_executable(test_dependencies dependencies.cpp)
     add_test(test_dependencies test_dependencies)
+else()
+    add_test(test_dependencies cmake -E echo "MSVC error C3779")
+    set_tests_properties(test_dependencies PROPERTIES SKIP_RETURN_CODE ON)
 endif()
 
 add_executable(test_di di.cpp)
